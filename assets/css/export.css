@@ -1,0 +1,377 @@
+/* استایل قالب خروجی عکس (A4 و استوری ۹:۱۶) - فقط هنگام ساخت عکس لود می‌شود */
+
+.rc-export-source,
+.rc-export-page {
+	font-family: 'IRANSansX', 'IRANSans', 'Vazirmatn', 'Vazir', Tahoma, Arial, sans-serif;
+}
+
+.rc-export-source {
+	position: absolute;
+	left: -99999px;
+	top: 0;
+	width: 700px;
+	direction: rtl;
+}
+
+.rc-export-page-host {
+	position: absolute;
+	left: -99999px;
+	top: 0;
+}
+
+.rc-export-page {
+	width: 794px;
+	height: 1123px;
+	background: #fff;
+	box-sizing: border-box;
+	padding: 18px;
+	direction: rtl;
+}
+
+.rc-export-page-border-outer {
+	border: 5px solid #1c4f73;
+	border-radius: 16px;
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+	padding: 26px 24px;
+	overflow: hidden;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+}
+
+.rc-export-page-border-inner {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+	width: 100%;
+}
+
+/* محتوای هر صفحه یک ستون Flex است تا فوتر (شماره تماس‌ها/لوگو/متن زیر لوگو)
+   با margin-top:auto همیشه به پایین همان صفحه بچسبد - مستقل از تعداد دوره‌ها. */
+.rc-export-page-content {
+	width: 700px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+/* --- بنر بالای صفحه: اطلاعیه شروع دوره‌ها --- */
+.rc-export-banner-top {
+	position: relative;
+	width: 100%;
+	max-width: 520px;
+	margin: 0 auto 26px;
+	flex: 0 0 auto;
+}
+
+.rc-export-banner-top svg {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.rc-export-banner-top-text {
+	position: absolute;
+	top: 60px;
+	left: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 0 34px;
+	font-weight: 800;
+	font-size: 24px;
+	color: #1c4f73;
+	line-height: 1.5;
+}
+
+/* --- گروه هر دپارتمان --- */
+.rc-export-dept-group {
+	margin-bottom: 20px;
+	flex: 0 0 auto;
+}
+
+.rc-export-dept-banner {
+	position: relative;
+	width: 100%;
+	max-width: 714px;
+	margin: 0 auto 18px;
+	flex: 0 0 auto;
+}
+
+.rc-export-dept-banner svg {
+	width: 100%;
+	height: auto;
+	display: block;
+}
+
+.rc-export-dept-text {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.rc-export-dept-title {
+	font-weight: 800;
+	font-size: 21px;
+	color: #c9a227;
+}
+
+.rc-export-dept-subtitle {
+	font-size: 17px;
+	font-weight: 700;
+	color: #c9a227;
+	margin-top: 8px;
+	margin-bottom: 5px;
+	direction: ltr;
+}
+
+/* --- هدر ستون‌ها و ردیف‌ها: هندسه مشترک تا دقیقاً زیر هم بیفتند --- */
+.rc-export-col-headers,
+.rc-export-row-cells {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 520px;
+	margin-right: 100px;
+	box-sizing: border-box;
+}
+
+.rc-export-col-headers {
+	margin-bottom: 14px;
+	flex: 0 0 auto;
+}
+
+.rc-export-col-headers .rc-export-col {
+	border: 2.5px solid #c9a227;
+	border-radius: 0;
+	padding: 7px 5px;
+	font-size: 13.5px;
+	font-weight: 800;
+	color: #1c4f73;
+	background: #fff;
+	text-align: center;
+}
+
+/* نسبت عرض ستون‌ها - هم برای هدر هم برای ردیف‌ها */
+.rc-export-col-title {
+	flex: 1.5 1 0;
+	min-width: 0;
+}
+
+.rc-export-col-date {
+	flex: 1 1 0;
+	min-width: 0;
+}
+
+.rc-export-col-days {
+	flex: 1.1 1 0;
+	min-width: 0;
+}
+
+/* --- ردیف‌های داده --- */
+.rc-export-row {
+	position: relative;
+	margin-bottom: 20px;
+	flex: 0 0 auto;
+}
+
+.rc-export-row-cells {
+	position: relative;
+	z-index: 1;
+	justify-content: center;
+	padding: 4px 10px;
+}
+
+.rc-export-row-cells .rc-export-col-title {
+	font-weight: 700;
+	font-size: 14px;
+	line-height: 1.35;
+	color: #1d2327;
+	text-align: center;
+}
+
+/* عنوان‌های طولانی دوره - کمی کوچک‌تر، ولی نه ریز و ناخوانا */
+.rc-export-row-cells .rc-export-col-title.rc-export-col-title-md {
+	font-size: 13px;
+}
+
+.rc-export-row-cells .rc-export-col-title.rc-export-col-title-sm {
+	font-size: 12px;
+}
+
+.rc-export-row-cells .rc-export-col-title.rc-export-col-title-xs {
+	font-size: 11px;
+}
+
+/* تاریخ و روزهای برگزاری - خواناتر و پررنگ‌تر */
+.rc-export-row-cells .rc-export-col-date,
+.rc-export-row-cells .rc-export-col-days {
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 1.35;
+	color: #28719c;
+	text-align: center;
+}
+
+.rc-export-row-cells .rc-export-col-date.rc-export-col-date-md,
+.rc-export-row-cells .rc-export-col-days.rc-export-col-days-md {
+	font-size: 11.5px;
+	line-height: 1.3;
+}
+
+.rc-export-row-cells .rc-export-col-date.rc-export-col-date-sm,
+.rc-export-row-cells .rc-export-col-days.rc-export-col-days-sm {
+	font-size: 10px;
+	line-height: 1.25;
+}
+
+.rc-export-row-cells .rc-export-col-date.rc-export-col-date-xs {
+	font-size: 9.5px;
+	line-height: 1.2;
+}
+
+/* --- فوتر خروجی عکس --- */
+.rc-export-footer {
+	margin-top: auto;
+	padding-top: 24px;
+	text-align: center;
+	flex: 0 0 auto;
+}
+
+.rc-export-footer-banner {
+	display: inline-block;
+	max-width: 560px;
+	margin: 0 auto;
+	border: 3px solid #28719c;
+	border-radius: 22px;
+	padding: 12px 22px;
+}
+
+.rc-export-footer-banner p {
+	margin: 0;
+	font-weight: 700;
+	font-size: 15px;
+	line-height: 1.9;
+	color: #1c4f73;
+}
+
+.rc-export-footer-highlight {
+	color: #c9a227;
+	font-weight: 800;
+}
+
+.rc-export-footer-connectors {
+	display: flex;
+	justify-content: space-between;
+	max-width: 280px;
+	margin: 0 auto;
+	padding: 0 30px;
+	box-sizing: border-box;
+}
+
+.rc-export-footer-connector {
+	display: block;
+	width: 3px;
+	height: 28px;
+	background: #28719c;
+	position: relative;
+}
+
+.rc-export-footer-connector::after {
+	content: "";
+	position: absolute;
+	bottom: -8px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 14px;
+	height: 14px;
+	border: 3px solid #28719c;
+	border-radius: 50%;
+	background: #fff;
+}
+
+.rc-export-footer-bottom {
+	direction: ltr;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	max-width: 620px;
+	margin: 10px auto 0;
+	gap: 10px;
+}
+
+.rc-export-footer-phone {
+	border: 3px solid #28719c;
+	direction: rtl;
+	border-radius: 20px;
+	padding: 8px 18px;
+	font-weight: 800;
+	font-size: 15px;
+	color: #1c4f73;
+	white-space: nowrap;
+}
+
+.rc-export-footer-logo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+}
+
+.rc-export-footer-logo svg {
+	display: block;
+}
+
+.rc-export-footer-logo-img {
+	display: block;
+	max-width: 100px;
+	max-height: 64px;
+}
+
+.rc-export-footer-logo span {
+	direction: rtl;
+	font-size: 11px;
+	font-weight: 700;
+	color: #28719c;
+	white-space: nowrap;
+}
+
+.rc-export-row-divider {
+	position: absolute;
+	top: 0;
+	right: 40px;
+	z-index: 0;
+	width: 88%;
+	height: 100%;
+	pointer-events: none;
+}
+
+/* =====================================================================
+   محافظ خروجی عکس (حتماً باید آخرین بلوک فایل باشد)
+
+   html2canvas هر عنصری که letter-spacing مخالف صفر داشته باشد را
+   گرافیم‌به‌گرافیم می‌کشد؛ نتیجه در فارسی حروف جداافتاده و
+   گلیف‌های روی هم است. پس در کل قالب خروجی عکس، فاصله‌گذاری
+   حروف/کلمات خنثی می‌ماند - حتی اگر قالب سایت چیز دیگری تحمیل کند.
+   ===================================================================== */
+.rc-export-source,
+.rc-export-source *,
+.rc-export-page,
+.rc-export-page * {
+	letter-spacing: normal !important;
+	word-spacing: normal !important;
+	font-kerning: auto;
+	font-variant-ligatures: normal;
+	text-rendering: auto;
+}

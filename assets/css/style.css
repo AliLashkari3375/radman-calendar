@@ -1,0 +1,282 @@
+/* استایل پایه پلاگین تقویم آموزشی رادمان - رنگ‌ها و فونت از تنظیمات ادمین Override می‌شوند */
+
+.rc-wrapper {
+	font-family: 'IRANSansX', 'IRANSans', 'Vazirmatn', 'Vazir', Tahoma, Arial, sans-serif;
+	direction: rtl;
+	--rc-header-color: #1c6ea4;
+	--rc-hover-color: #f1f7fb;
+	--rc-badge-online: #2ecc71;
+	--rc-badge-offline: #e67e22;
+	--rc-badge-presence: #3498db;
+	--rc-banner-color: #1c4f73;
+
+	border: 1px solid #e2e6ea;
+	border-radius: 10px;
+	background: #fff;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+	padding: 16px;
+	box-sizing: border-box;
+}
+
+.rc-wrapper * {
+	box-sizing: border-box;
+}
+
+/* --- نوار کنترل (جستجو + فیلتر روز) --- */
+.rc-controls {
+	display: flex;
+	gap: 10px;
+	margin-bottom: 16px;
+	flex-wrap: wrap;
+}
+
+.rc-search,
+.rc-day-filter {
+	padding: 9px 14px;
+	border: 1px solid #dde2e7;
+	border-radius: 8px;
+	font-size: 14px;
+	font-family: inherit;
+	background: #fafbfc;
+	transition: border-color 0.15s ease-in-out;
+}
+
+.rc-search {
+	flex: 1 1 240px;
+	min-width: 200px;
+}
+
+.rc-search:focus,
+.rc-day-filter:focus {
+	outline: none;
+	border-color: var(--rc-header-color);
+	background: #fff;
+}
+
+/* --- جدول --- */
+/* در همه اندازه‌ها «جدول» می‌ماند (کارت/استک نمی‌شود)؛ در عرض کم فقط
+   همین قاب اسکرول افقی می‌گیرد تا ساختار جدولی حفظ شود. */
+.rc-table-wrap {
+	width: 100%;
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+}
+
+.rc-table {
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: separate;
+	border-spacing: 0;
+	border-radius: 8px;
+	border: 1px solid #eceff2;
+	font-family: inherit;
+}
+
+.rc-table thead th {
+	background: var(--rc-header-color);
+	color: #fff;
+	padding: 12px 14px;
+	text-align: right;
+	font-weight: 600;
+	font-size: 14px;
+	white-space: nowrap;
+}
+
+.rc-table thead th:first-child {
+	border-top-right-radius: 8px;
+}
+
+.rc-table thead th:last-child {
+	border-top-left-radius: 8px;
+}
+
+.rc-table tbody td {
+	padding: 12px 14px;
+	border-bottom: 1px solid #f0f2f4;
+	font-size: 13.5px;
+	color: #2c3338;
+	vertical-align: middle;
+}
+
+.rc-table tbody tr:last-child td {
+	border-bottom: none;
+}
+
+.rc-table tbody tr:nth-child(even) {
+	background: #fafbfc;
+}
+
+.rc-row:hover {
+	background: var(--rc-hover-color) !important;
+	transition: background 0.15s ease-in-out;
+}
+
+.rc-row.rc-hidden {
+	display: none;
+}
+
+.rc-col-title {
+	min-width: 170px;
+}
+
+.rc-col-title a {
+	color: var(--rc-header-color);
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.rc-col-title a:hover {
+	text-decoration: underline;
+}
+
+.rc-col-time,
+.rc-col-date,
+.rc-col-end-date {
+	white-space: nowrap;
+}
+
+/* روز و ساعت عمداً جمع‌وجورتر از متن دوره و توضیحات باشد. */
+.rc-col-time {
+	font-size: 12px !important;
+	line-height: 1.35;
+	width: 220px;
+	max-width: 220px;
+	padding-inline: 8px !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* عرض ثابت ستون‌ها تا متن بلند روز/ساعت باعث کش‌آمدن جدول نشود. */
+.rc-table th:nth-child(1), .rc-table td:nth-child(1) { width: 180px; }
+.rc-table th:nth-child(2), .rc-table td:nth-child(2) { width: 220px; max-width: 220px; }
+.rc-table th:nth-child(3), .rc-table td:nth-child(3),
+.rc-table th:nth-child(4), .rc-table td:nth-child(4) { width: 105px; }
+.rc-table th:nth-child(5), .rc-table td:nth-child(5) { width: 105px; }
+.rc-table th:nth-child(6), .rc-table td:nth-child(6) { width: 85px; }
+.rc-table th:nth-child(7), .rc-table td:nth-child(7) { width: 150px; }
+
+/* --- برچسب‌های نحوه برگزاری --- */
+.rc-badge {
+	display: inline-block;
+	padding: 3px 10px;
+	border-radius: 20px;
+	font-size: 11.5px;
+	font-weight: 500;
+	color: #fff;
+	margin-inline-end: 4px;
+	margin-bottom: 2px;
+}
+
+.rc-badge-online {
+	background: var(--rc-badge-online);
+}
+
+.rc-badge-offline {
+	background: var(--rc-badge-offline);
+}
+
+.rc-badge-presence {
+	background: var(--rc-badge-presence);
+}
+
+.rc-badge-empty {
+	color: #b0b6bb;
+}
+
+.rc-count {
+	margin: 0 0 8px;
+	font-size: 13px;
+	color: #5a6069;
+}
+
+.rc-count-number {
+	color: var(--rc-header-color, #1c6ea4);
+}
+
+.rc-error {
+	color: #c0392b;
+	padding: 12px;
+	background: #fdecea;
+	border-radius: 6px;
+}
+
+.rc-empty {
+	color: #8a8f94;
+	padding: 20px;
+	text-align: center;
+}
+
+/* --- بنر عنوان بالای جدول (ماه/سال دوره) --- */
+.rc-banner {
+	width: 100%;
+	max-width: 100%;
+	margin: 0 auto 20px;
+}
+
+.rc-banner-text {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	padding: 6px 20px;
+}
+
+.rc-banner-title {
+	font-family: inherit;
+	font-size: 30px;
+	font-weight: 900;
+	color: var(--rc-banner-color, #1c4f73);
+	line-height: 1.4;
+}
+
+/* --- ریسپانسیو: ساختار جدولی حفظ می‌شود، فقط اسکرول افقی --- */
+@media (max-width: 900px) {
+	.rc-wrapper {
+		padding: 12px;
+	}
+
+	.rc-table {
+		min-width: 760px;
+	}
+}
+
+@media (max-width: 480px) {
+	.rc-banner-title {
+		font-size: 20px;
+	}
+
+	.rc-table thead th {
+		font-size: 13px;
+		padding: 10px;
+	}
+
+	.rc-table tbody td {
+		font-size: 12.5px;
+		padding: 10px;
+	}
+}
+
+/* --- دکمه دانلود جدول به‌صورت عکس --- */
+.rc-export-btn {
+	margin-inline-start: auto;
+	padding: 9px 16px;
+	border: 1px solid #dde2e7;
+	border-radius: 8px;
+	background: #fff;
+	color: #2c3338;
+	font-size: 13px;
+	font-family: inherit;
+	cursor: pointer;
+	transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.rc-export-btn:hover {
+	background: var(--rc-hover-color);
+	border-color: var(--rc-header-color);
+}
+
+.rc-export-btn:disabled {
+	opacity: 0.6;
+	cursor: wait;
+}
