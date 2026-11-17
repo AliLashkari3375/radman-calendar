@@ -30,7 +30,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 // تنظیمات - این دو خط را بعد از ساخت ریپو پر کن
 // -----------------------------------------------------------------------
 if ( ! defined( 'RC_GITHUB_REPO' ) ) {
-	define( 'RC_GITHUB_REPO', '' ); // مثال: 'ricktech/radman-calendar'
+	// پیش‌فرض: ریپوی رسمی پلاگین. نیازی به تنظیم دستی توسط مشتری نیست؛ اگر لازم شد
+	// می‌توان در wp-config.php مقدار دیگری تعریف کرد.
+	define( 'RC_GITHUB_REPO', 'AliLashkari3375/radman-calendar' );
 }
 if ( ! defined( 'RC_GITHUB_TOKEN' ) ) {
 	define( 'RC_GITHUB_TOKEN', '' ); // فقط برای ریپوی خصوصی لازم است

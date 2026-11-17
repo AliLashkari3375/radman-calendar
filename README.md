@@ -27,13 +27,10 @@ without the author's written permission is **not allowed**. See [`LICENSE`](./LI
 
 ## Updates
 
-To enable automatic updates from GitHub, add this line to your site's `wp-config.php`:
+Automatic updates work out of the box: the plugin already points to this repository, so no configuration is needed.
+When a newer release is published here, it appears in WordPress under Dashboard → Updates and Plugins.
 
-```php
-define( 'RC_GITHUB_REPO', 'AliLashkari3375/radman-calendar' );
-```
-
-Each release must have a tag matching the version (e.g. `v1.7.7`) and the plugin zip attached as an asset
+Each release must have a tag matching the version (e.g. `v1.7.8`) and the plugin zip attached as an asset
 (with the `radman-calendar/` folder inside the zip).
 
 ## Contact for licensing
@@ -78,13 +75,10 @@ Each release must have a tag matching the version (e.g. `v1.7.7`) and the plugin
 
 ## بروزرسانی
 
-برای فعال شدن آپدیت خودکار از گیت‌هاب، این خط را به `wp-config.php` سایت اضافه کن:
+آپدیت خودکار بدون هیچ تنظیمی کار می‌کند: پلاگین از قبل به همین ریپو وصل است.
+وقتی نسخه‌ی جدیدتری اینجا منتشر شود، در پیشخوان وردپرس بخش «به‌روزرسانی‌ها» و «افزونه‌ها» نمایش داده می‌شود.
 
-```php
-define( 'RC_GITHUB_REPO', 'AliLashkari3375/radman-calendar' );
-```
-
-هر Release باید تگی هم‌نام با نسخه داشته باشد (مثلاً `v1.7.7`) و زیپ پلاگین (با پوشه‌ی
+هر Release باید تگی هم‌نام با نسخه داشته باشد (مثلاً `v1.7.8`) و زیپ پلاگین (با پوشه‌ی
 `radman-calendar/` داخلش) به‌عنوان Asset پیوست شده باشد.
 
 ## تماس برای مجوز استفاده
