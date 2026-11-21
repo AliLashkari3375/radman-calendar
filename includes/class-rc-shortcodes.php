@@ -802,7 +802,12 @@ class RC_Shortcodes {
 	 * از متن کامل زمان‌بندی («یکشنبه 16:00 الی 17:30») فقط بخش الگوی روز را جدا می‌کند
 	 */
 	private function extract_day_pattern( $class_times, &$days_count = 0 ) {
-		$raw        = (string) $class_times;
+		$raw = trim( (string) $class_times );
+		if ( '' === $raw ) {
+			$days_count = 0;
+			return '';
+		}
+
 		$normalized = str_replace( array( "\u{200C}", "\u{064A}", "\u{0643}" ), array( '', 'ی', 'ک' ), $raw );
 
 		$pattern = '/(?:یک\s*شنبه|دو\s*شنبه|سه\s*شنبه|چهار\s*شنبه|پنج\s*شنبه|جمعه|شنبه)/u';
@@ -835,12 +840,21 @@ class RC_Shortcodes {
 			return implode( '، ', $days ) . ' و ' . $last;
 		}
 
-		// fallback اگر روز هفته استاندارد در متن نبود (مثلاً «همه روزه 10:00 تا 12:00»)
+		// fallback امن برای UTF-8 (مانند «روزهای زوج 16:00 الی 18:00» یا «روزهای فرد ...»)
+		// نکته: در PHP تابع trim() بایت‌به‌بایت است و گذاشتن کاراکتر فارسی مانند «،» در آن
+		// باعث خراب شدن UTF-8 و خالی شدن خروجی esc_html() می‌شود؛ پس فقط از preg_replace با /u استفاده می‌کنیم.
 		$days_count = 1;
-		$cut        = preg_replace( '/\d{1,2}\s*[:：]\s*\d{2}(?:\s*(?:الی|تا|[-–—])\s*\d{1,2}\s*[:：]\s*\d{2})?/u', '', $raw );
-		$cut        = preg_replace( '/[0-9۰-۹٠-٩]+/u', '', (string) $cut );
-		$cut        = preg_replace( '/\s+/u', ' ', (string) $cut );
-		$cut        = trim( (string) $cut, " \t\n\r\0\x0B-–—،|/" );
+		$cut        = preg_replace( '/[0-9۰-۹٠-٩]{1,2}\s*[:：]\s*[0-9۰-۹٠-٩]{2}(?:\s*(?:الی|تا|[-–—])\s*[0-9۰-۹٠-٩]{1,2}\s*[:：]\s*[0-9۰-۹٠-٩]{2})?/u', '', $raw );
+		if ( null === $cut ) {
+			$cut = $raw;
+		}
+		$cut = preg_replace( '/[0-9۰-۹٠-٩]+/u', '', $cut );
+		if ( null === $cut ) {
+			$cut = $raw;
+		}
+		$cut = preg_replace( '/\s+/u', ' ', $cut );
+		$cut = preg_replace( '/^[\s\-–—،,|\/:]+|[\s\-–—،,|\/:]+$/u', '', (string) $cut );
+		$cut = trim( (string) $cut );
 		return '' !== $cut ? $cut : $raw;
 	}
 
