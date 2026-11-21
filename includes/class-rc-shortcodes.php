@@ -801,12 +801,47 @@ class RC_Shortcodes {
 	/**
 	 * از متن کامل زمان‌بندی («یکشنبه 16:00 الی 17:30») فقط بخش الگوی روز را جدا می‌کند
 	 */
-	private function extract_day_pattern( $class_times ) {
-		$cut = preg_replace( '/[0-9۰-۹].*/u', '', (string) $class_times );
-		$cut = trim( $cut, " \t\n\r\0\x0B" );
-		$cut = preg_replace( '/[-–—]+$/u', '', $cut );
-		$cut = trim( $cut );
-		return '' !== $cut ? $cut : $class_times;
+	private function extract_day_pattern( $class_times, &$days_count = 0 ) {
+		$raw        = (string) $class_times;
+		$normalized = str_replace( array( "\u{200C}", "\u{064A}", "\u{0643}" ), array( '', 'ی', 'ک' ), $raw );
+
+		$pattern = '/(?:یک\s*شنبه|دو\s*شنبه|سه\s*شنبه|چهار\s*شنبه|پنج\s*شنبه|جمعه|شنبه)/u';
+		if ( preg_match_all( $pattern, $normalized, $matches ) && ! empty( $matches[0] ) ) {
+			$canonical_map = array(
+				'یکشنبه'   => 'یکشنبه',
+				'دوشنبه'   => 'دوشنبه',
+				'سهشنبه'   => 'سه‌شنبه',
+				'چهارشنبه' => 'چهارشنبه',
+				'پنجشنبه'  => 'پنج‌شنبه',
+				'جمعه'     => 'جمعه',
+				'شنبه'     => 'شنبه',
+			);
+			$days = array();
+			foreach ( $matches[0] as $m ) {
+				$key   = preg_replace( '/\s+/u', '', $m );
+				$label = isset( $canonical_map[ $key ] ) ? $canonical_map[ $key ] : $m;
+				if ( ! in_array( $label, $days, true ) ) {
+					$days[] = $label;
+				}
+			}
+			$days_count = count( $days );
+			if ( 1 === $days_count ) {
+				return $days[0];
+			}
+			if ( 2 === $days_count ) {
+				return $days[0] . ' و ' . $days[1];
+			}
+			$last = array_pop( $days );
+			return implode( '، ', $days ) . ' و ' . $last;
+		}
+
+		// fallback اگر روز هفته استاندارد در متن نبود (مثلاً «همه روزه 10:00 تا 12:00»)
+		$days_count = 1;
+		$cut        = preg_replace( '/\d{1,2}\s*[:：]\s*\d{2}(?:\s*(?:الی|تا|[-–—])\s*\d{1,2}\s*[:：]\s*\d{2})?/u', '', $raw );
+		$cut        = preg_replace( '/[0-9۰-۹٠-٩]+/u', '', (string) $cut );
+		$cut        = preg_replace( '/\s+/u', ' ', (string) $cut );
+		$cut        = trim( (string) $cut, " \t\n\r\0\x0B-–—،|/" );
+		return '' !== $cut ? $cut : $raw;
 	}
 
 	/**
@@ -955,50 +990,31 @@ class RC_Shortcodes {
 						<span class="rc-export-col rc-export-col-days">روزهای برگزاری</span>
 					</div>
 
-					<?php
-					// ادغام دوره‌های هم‌نام در هر دپارتمان تا تمام تاریخ‌های شروع یک دوره در یک ردیف نمایش داده شوند
-					$merged_rows = array();
-					foreach ( $dep_items as $item ) {
-						$row_title = (string) $item['title'];
-						if ( ! isset( $merged_rows[ $row_title ] ) ) {
-							$merged_rows[ $row_title ] = array(
-								'title' => $row_title,
-								'dates' => array(),
-								'days'  => array(),
-							);
-						}
+					<?php foreach ( $dep_items as $item ) : ?>
+						<?php
 						$raw_dates = ! empty( $item['start_dates'] ) ? (array) $item['start_dates'] : ( '' !== (string) $item['start_date'] ? array( $item['start_date'] ) : array() );
+						$dates     = array();
 						foreach ( $raw_dates as $rd ) {
 							$readable = RC_Jalali::format_readable( $rd );
-							if ( '' !== $readable && ! in_array( $readable, $merged_rows[ $row_title ]['dates'], true ) ) {
-								$merged_rows[ $row_title ]['dates'][] = $readable;
+							if ( '' !== $readable && ! in_array( $readable, $dates, true ) ) {
+								$dates[] = $readable;
 							}
 						}
-						$day_pat = trim( (string) $this->extract_day_pattern( $item['class_times'] ) );
-						if ( '' !== $day_pat && ! in_array( $day_pat, $merged_rows[ $row_title ]['days'], true ) ) {
-							$merged_rows[ $row_title ]['days'][] = $day_pat;
-						}
-					}
-					?>
-					<?php foreach ( $merged_rows as $mrow ) : ?>
-						<?php
-						$date_count = count( $mrow['dates'] );
-						$days_count = count( $mrow['days'] );
-						$days_text  = implode( ' / ', $mrow['days'] );
+						$date_count = count( $dates );
+						$days_count = 0;
+						$days_text  = $this->extract_day_pattern( $item['class_times'], $days_count );
 						?>
 						<div class="rc-export-row">
 							<div class="rc-export-row-cells">
-								<span class="rc-export-col rc-export-col-title <?php echo esc_attr( $this->title_size_class( $mrow['title'] ) ); ?>"><?php echo esc_html( $mrow['title'] ); ?></span>
+								<span class="rc-export-col rc-export-col-title <?php echo esc_attr( $this->title_size_class( $item['title'] ) ); ?>"><?php echo esc_html( $item['title'] ); ?></span>
 								<span class="rc-export-col rc-export-col-date <?php echo esc_attr( $this->date_size_class( $date_count ) ); ?>"><?php
 									if ( $date_count >= 4 ) {
-										echo esc_html( implode( '، ', $mrow['dates'] ) );
+										echo esc_html( implode( '، ', $dates ) );
 									} else {
-										echo implode( '<br>', array_map( 'esc_html', $mrow['dates'] ) );
+										echo implode( '<br>', array_map( 'esc_html', $dates ) );
 									}
 								?></span>
-								<span class="rc-export-col rc-export-col-days <?php echo esc_attr( $this->days_size_class( $days_count, $days_text ) ); ?>"><?php
-									echo implode( '<br>', array_map( 'esc_html', $mrow['days'] ) );
-								?></span>
+								<span class="rc-export-col rc-export-col-days <?php echo esc_attr( $this->days_size_class( $days_count, $days_text ) ); ?>"><?php echo esc_html( $days_text ); ?></span>
 							</div>
 							<svg class="rc-export-row-divider" width="413" height="26" viewBox="0 0 413 26" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
 								<path d="M0 2H28.3238V24H383.798V2.43564H413" stroke="#28719C" stroke-width="1"/>
