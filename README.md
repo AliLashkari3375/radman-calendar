@@ -16,8 +16,12 @@ without the author's written permission is **not allowed**. See [`LICENSE`](./LI
 - Calendar and course-list shortcodes with multiple display templates
 - Native Jalali (Persian) calendar, no external dependencies
 - Admin panel: central settings, visual shortcode builder, manual data entry, license system
-- Image export of tables (html2canvas)
+- Image export of tables (html2canvas), with smart weekday detection and one row per course
+- Department priority and English department names matched reliably (Arabic/Persian letter variants, half-spaces and the optional "دپارتمان" prefix are normalized)
+- Manual class priority with Persian-digit support, inherited by course title across terms in multi-month date ranges
 - Automatic updates via GitHub Releases
+
+**Current version: 1.8.1** — see the [Releases](../../releases) page and the `CHANGELOG-*.md` files for the full history.
 
 ## Installation (authorized users only)
 
@@ -30,8 +34,12 @@ without the author's written permission is **not allowed**. See [`LICENSE`](./LI
 Automatic updates work out of the box: the plugin already points to this repository, so no configuration is needed.
 When a newer release is published here, it appears in WordPress under Dashboard → Updates and Plugins.
 
-Each release must have a tag matching the version (e.g. `v1.7.8`) and the plugin zip attached as an asset
-(with the `radman-calendar/` folder inside the zip).
+Release rules (for the author):
+- Every new version gets its own new release (tag such as `v1.8.2`); never edit older releases.
+- Attach the plugin zip as an asset named exactly `radman-calendar.zip` (with the `radman-calendar/` folder inside it).
+- Only the newest release is marked **Latest**.
+
+Customers see a new version within a few hours (the update check is cached for up to 6 hours), or right after the cache expires when they press "Check again" on Dashboard → Updates.
 
 ## Contact for licensing
 
@@ -64,8 +72,12 @@ Each release must have a tag matching the version (e.g. `v1.7.8`) and the plugin
 - شرت‌کدهای تقویم و لیست دوره با چندین قالب نمایش
 - تقویم شمسی (جلالی) native، بدون وابستگی خارجی
 - پنل مدیریت: تنظیمات مرکزی، شرت‌کد ساز بصری، داده‌ی دستی، سیستم لایسنس
-- خروجی تصویر از جدول‌ها (html2canvas)
+- خروجی تصویر از جدول‌ها (html2canvas)، با تشخیص هوشمند روزهای هفته و ردیف جداگانه برای هر دوره
+- تطبیق مطمئن اولویت دپارتمان‌ها و نام انگلیسی دپارتمان‌ها (یکسان‌سازی ی/ک عربی و فارسی، نیم‌فاصله و پیشوند اختیاری «دپارتمان»)
+- اولویت دستی کلاس‌ها با پشتیبانی از ارقام فارسی که در بازه‌های چندماهه بین ترم‌ها بر اساس عنوان دوره به ارث می‌رسد
 - بروزرسانی خودکار از طریق GitHub Releases
+
+**نسخه‌ی فعلی: ۱٫۸٫۱** — تاریخچه‌ی کامل را در بخش [Releases](../../releases) و فایل‌های `CHANGELOG-*.md` ببین.
 
 ## نصب (فقط برای کاربران مجاز)
 
@@ -78,8 +90,12 @@ Each release must have a tag matching the version (e.g. `v1.7.8`) and the plugin
 آپدیت خودکار بدون هیچ تنظیمی کار می‌کند: پلاگین از قبل به همین ریپو وصل است.
 وقتی نسخه‌ی جدیدتری اینجا منتشر شود، در پیشخوان وردپرس بخش «به‌روزرسانی‌ها» و «افزونه‌ها» نمایش داده می‌شود.
 
-هر Release باید تگی هم‌نام با نسخه داشته باشد (مثلاً `v1.7.8`) و زیپ پلاگین (با پوشه‌ی
-`radman-calendar/` داخلش) به‌عنوان Asset پیوست شده باشد.
+قوانین Release (برای نویسنده):
+- هر نسخه‌ی جدید Release جدید خودش را با تگ مخصوص (مثلاً `v1.8.2`) دارد؛ Releaseهای قبلی ویرایش نمی‌شوند.
+- زیپ پلاگین (با پوشه‌ی `radman-calendar/` داخلش) دقیقاً با نام `radman-calendar.zip` به‌عنوان Asset پیوست می‌شود.
+- فقط جدیدترین Release برچسب **Latest** دارد.
+
+مشتری‌ها نسخه‌ی جدید را ظرف چند ساعت می‌بینند (بررسی بروزرسانی تا ۶ ساعت کش می‌شود) یا بعد از پایان کش با زدن «بررسی دوباره» در پیشخوان ← به‌روزرسانی‌ها.
 
 ## تماس برای مجوز استفاده
 
