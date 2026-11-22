@@ -37,7 +37,8 @@ jQuery(function ($) {
 			description: $row.find('.rc-manual-description').val(),
 			link: $row.find('.rc-manual-link').val(),
 			priority: $row.find('.rc-manual-priority').val() || 0,
-			title: $row.find('.rc-manual-title').val()
+			title: $row.find('.rc-manual-title').val(),
+			display_title: $row.find('strong').first().text()
 		};
 
 		$btn.prop('disabled', true);

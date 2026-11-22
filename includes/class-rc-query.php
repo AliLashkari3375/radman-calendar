@@ -633,6 +633,47 @@ class RC_Query {
 	/**
 	 * مرتب‌سازی آیتم‌ها بر اساس تنطیمات ادمین یا شرت‌کد
 	 */
+	/**
+	 * ارث‌بری اولویت دستی بر اساس عنوان دوره در بازه‌های چندترمی:
+	 * اگر ادمین برای یک دوره (مثلاً «پایتون مقدماتی») در یک ترم اولویت ثبت کرده
+	 * باشد و همان دوره در ترم دیگر هنوز اولویت جداگانه (class_key) نداشته باشد،
+	 * اولویت همان عنوان را می‌گیرد تا در بازه‌های تاریخی چندماهه ترتیب به‌هم نریزد.
+	 */
+	public static function apply_title_priority_fallback( $items ) {
+		if ( empty( $items ) ) {
+			return $items;
+		}
+
+		$title_map = RC_Manual_Data::get_title_priority_map();
+
+		// از خود آیتم‌های همین درخواست هم بالاترین اولویت هر عنوان را جمع می‌کنیم
+		foreach ( $items as $item ) {
+			$prio = isset( $item['sort_priority'] ) ? (int) $item['sort_priority'] : 0;
+			if ( $prio > 0 ) {
+				$norm = self::normalize_department_key( isset( $item['title'] ) ? $item['title'] : '' );
+				if ( '' !== $norm && ( ! isset( $title_map[ $norm ] ) || $prio > $title_map[ $norm ] ) ) {
+					$title_map[ $norm ] = $prio;
+				}
+			}
+		}
+
+		if ( empty( $title_map ) ) {
+			return $items;
+		}
+
+		foreach ( $items as $idx => $item ) {
+			$prio = isset( $item['sort_priority'] ) ? (int) $item['sort_priority'] : 0;
+			if ( 0 === $prio ) {
+				$norm = self::normalize_department_key( isset( $item['title'] ) ? $item['title'] : '' );
+				if ( '' !== $norm && isset( $title_map[ $norm ] ) ) {
+					$items[ $idx ]['sort_priority'] = (int) $title_map[ $norm ];
+				}
+			}
+		}
+
+		return $items;
+	}
+
 	public static function sort_items( $items, $sort_by ) {
 		switch ( $sort_by ) {
 			case 'date_asc':

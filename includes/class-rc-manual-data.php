@@ -191,4 +191,36 @@ class RC_Manual_Data {
 		unset( self::$row_cache[ $class_key ] );
 		return $wpdb->delete( self::table_name(), array( 'class_key' => $class_key ) );
 	}
+
+	/** کش درون-درخواست نگاشت «عنوان نرمال‌شده دوره → اولویت» */
+	private static $title_priority_cache = null;
+
+	const TITLE_PRIORITY_OPTION = 'rc_title_priority_map';
+
+	public static function get_title_priority_map() {
+		if ( null === self::$title_priority_cache ) {
+			$saved = get_option( self::TITLE_PRIORITY_OPTION, array() );
+			self::$title_priority_cache = is_array( $saved ) ? $saved : array();
+		}
+		return self::$title_priority_cache;
+	}
+
+	public static function set_title_priority( $title, $priority ) {
+		if ( ! class_exists( 'RC_Query' ) ) {
+			return;
+		}
+		$norm = RC_Query::normalize_department_key( $title );
+		if ( '' === $norm ) {
+			return;
+		}
+		$map      = self::get_title_priority_map();
+		$priority = (int) $priority;
+		if ( $priority > 0 ) {
+			$map[ $norm ] = $priority;
+		} else {
+			unset( $map[ $norm ] );
+		}
+		self::$title_priority_cache = $map;
+		update_option( self::TITLE_PRIORITY_OPTION, $map, false );
+	}
 }

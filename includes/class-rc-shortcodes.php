@@ -372,6 +372,11 @@ class RC_Shortcodes {
 			)
 		);
 
+		if ( $result['success'] && ! empty( $result['items'] ) ) {
+			// قبل از فیلتر بازه تاریخ، اولویت عنوان‌ها بین ترم‌ها همگام‌سازی می‌شود
+			$result['items'] = RC_Query::apply_title_priority_fallback( $result['items'] );
+		}
+
 		if ( $result['success'] && ( '' !== $dates['cutoff'] || '' !== $dates['until'] ) ) {
 			$result['items'] = RC_Query::filter_from_date( $result['items'], $dates['cutoff'], $dates['until'] );
 		}

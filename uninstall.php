@@ -38,6 +38,7 @@ function rc_uninstall_cleanup_site() {
 	delete_option( 'rc_lanmis_warm_index' );
 	delete_option( 'rc_merge_cache_gen' );
 	delete_option( 'rc_lanmis_cache_gen' );
+	delete_option( 'rc_title_priority_map' );
 
 	// ۳) حذف تمام Transientها و fallbackهای پویای اتصال به لن‌میس
 	// (نام این‌ها بر اساس هش پارامترهای هر درخواست ساخته می‌شود، پس با LIKE پاک می‌شوند)

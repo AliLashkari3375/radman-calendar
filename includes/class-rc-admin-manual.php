@@ -97,6 +97,12 @@ class RC_Admin_Manual {
 			wp_send_json_error( array( 'message' => 'خطا در ذخیره‌سازی دیتابیس' ), 500 );
 		}
 
+		$display_title = isset( $_POST['display_title'] ) ? sanitize_text_field( wp_unslash( $_POST['display_title'] ) ) : '';
+		$effective_title = '' !== $title ? $title : $display_title;
+		if ( '' !== $effective_title ) {
+			RC_Manual_Data::set_title_priority( $effective_title, $priority );
+		}
+
 		// بدون این، جدول‌های ادغام‌شده سایت تا پایان TTL توضیح/لینک قبلی را نشان می‌دادند
 		if ( class_exists( 'RC_Shortcodes' ) ) {
 			RC_Shortcodes::purge_merge_cache();
