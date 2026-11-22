@@ -689,7 +689,8 @@ class RC_Shortcodes {
 		$next_gen = self::get_cache_gen() + 1;
 		update_option( self::MERGE_GEN_OPTION, $next_gen, true );
 		self::$cache_gen_memo = $next_gen;
-		self::$render_memo    = array();
+		self::$render_memo        = array();
+		self::$translations_cache = null;
 
 		$wpdb->query(
 			"DELETE FROM {$wpdb->options}
@@ -911,9 +912,16 @@ class RC_Shortcodes {
 		$raw      = isset( $settings['department_translations'] ) ? $settings['department_translations'] : '';
 		$map      = array();
 		foreach ( preg_split( '/\r\n|\r|\n/', (string) $raw ) as $line ) {
-			$parts = explode( '=', $line, 2 );
-			if ( 2 === count( $parts ) && trim( $parts[0] ) !== '' ) {
-				$map[ trim( $parts[0] ) ] = trim( $parts[1] );
+			$line = trim( (string) $line );
+			if ( '' === $line ) {
+				continue;
+			}
+			$parts = false !== strpos( $line, '=' ) ? explode( '=', $line, 2 ) : explode( ':', $line, 2 );
+			if ( 2 === count( $parts ) && trim( $parts[0] ) !== '' && trim( $parts[1] ) !== '' ) {
+				$norm_key = RC_Query::normalize_department_key( $parts[0] );
+				if ( '' !== $norm_key ) {
+					$map[ $norm_key ] = trim( $parts[1] );
+				}
 			}
 		}
 		self::$translations_cache = $map;
@@ -935,7 +943,7 @@ class RC_Shortcodes {
 			'highlight'   => isset( $settings['footer_text_highlight'] ) && '' !== $settings['footer_text_highlight'] ? $settings['footer_text_highlight'] : 'رایگان',
 			'after'       => isset( $settings['footer_text_after'] ) && '' !== $settings['footer_text_after'] ? $settings['footer_text_after'] : 'و اطلاعات بیشتر',
 			'line2'       => isset( $settings['footer_text_line2'] ) && '' !== $settings['footer_text_line2'] ? $settings['footer_text_line2'] : 'فقط کافیه «نام دوره» رو ارسال کنی',
-			'phone_left'  => isset( $settings['footer_phone_left'] ) && '' !== $settings['footer_phone_left'] ? $settings['footer_phone_left'] : 'شماره تماس خود را وارد کنید',
+			'phone_left'  => isset( $settings['footer_phone_left'] ) ? $settings['footer_phone_left'] : 'شماره تماس خود را وارد کنید',
 			'phone_right' => isset( $settings['footer_phone_right'] ) && '' !== $settings['footer_phone_right'] ? $settings['footer_phone_right'] : '',
 			'logo_text'   => isset( $settings['footer_logo_text'] ) ? $settings['footer_logo_text'] : 'آکادمی تخصصی رادمان',
 			'logo_url'    => isset( $settings['footer_logo_url'] ) ? $settings['footer_logo_url'] : '',
@@ -957,9 +965,9 @@ class RC_Shortcodes {
 			$names = array_keys( $groups );
 			usort(
 				$names,
-				function ( $a, $b ) use ( $rank_map ) {
-					$ra = isset( $rank_map[ $a ] ) ? $rank_map[ $a ] : PHP_INT_MAX;
-					$rb = isset( $rank_map[ $b ] ) ? $rank_map[ $b ] : PHP_INT_MAX;
+				function ( $a, $b ) {
+					$ra = RC_Query::get_department_rank( $a );
+					$rb = RC_Query::get_department_rank( $b );
 					if ( $ra !== $rb ) {
 						return $ra <=> $rb;
 					}
@@ -992,8 +1000,11 @@ class RC_Shortcodes {
 						</svg>
 						<div class="rc-export-dept-text">
 							<span class="rc-export-dept-title"><?php echo esc_html( $dep_name ); ?></span>
-							<?php if ( ! empty( $translations[ $dep_name ] ) ) : ?>
-								<span class="rc-export-dept-subtitle"><?php echo esc_html( $translations[ $dep_name ] ); ?></span>
+							<?php
+							$dep_tr_key = RC_Query::normalize_department_key( $dep_name );
+							if ( '' !== $dep_tr_key && ! empty( $translations[ $dep_tr_key ] ) ) :
+								?>
+								<span class="rc-export-dept-subtitle"><?php echo esc_html( $translations[ $dep_tr_key ] ); ?></span>
 							<?php endif; ?>
 						</div>
 					</div>
@@ -1051,7 +1062,9 @@ class RC_Shortcodes {
 						<span class="rc-export-footer-connector"></span>
 					</div>
 					<div class="rc-export-footer-bottom">
-						<div class="rc-export-footer-phone"><?php echo esc_html( $footer_settings['phone_left'] ); ?></div>
+						<?php if ( '' !== trim( (string) $footer_settings['phone_left'] ) ) : ?>
+							<div class="rc-export-footer-phone"><?php echo esc_html( $footer_settings['phone_left'] ); ?></div>
+						<?php endif; ?>
 						<div class="rc-export-footer-logo">
 							<?php if ( ! empty( $footer_settings['logo_url'] ) ) : ?>
 								<img src="<?php echo esc_url( $footer_settings['logo_url'] ); ?>" alt="" class="rc-export-footer-logo-img">
@@ -1065,7 +1078,9 @@ class RC_Shortcodes {
 								<span><?php echo esc_html( $footer_settings['logo_text'] ); ?></span>
 							<?php endif; ?>
 						</div>
-						<div class="rc-export-footer-phone"><?php echo esc_html( $footer_settings['phone_right'] ); ?></div>
+						<?php if ( '' !== trim( (string) $footer_settings['phone_right'] ) ) : ?>
+							<div class="rc-export-footer-phone"><?php echo esc_html( $footer_settings['phone_right'] ); ?></div>
+						<?php endif; ?>
 					</div>
 				</div>
 			<?php endif; ?>

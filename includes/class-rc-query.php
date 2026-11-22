@@ -664,6 +664,15 @@ class RC_Query {
 						if ( $a['sort_priority'] !== $b['sort_priority'] ) {
 							return $b['sort_priority'] <=> $a['sort_priority'];
 						}
+						if ( '' === $a['start_date'] && '' === $b['start_date'] ) {
+							return 0;
+						}
+						if ( '' === $a['start_date'] ) {
+							return 1;
+						}
+						if ( '' === $b['start_date'] ) {
+							return -1;
+						}
 						return strcmp( $a['start_date'], $b['start_date'] );
 					}
 				);
@@ -747,9 +756,9 @@ class RC_Query {
 
 			usort(
 				$remaining,
-				function ( $a, $b ) use ( $rank_map ) {
-					$rank_a = isset( $rank_map[ $a['department'] ] ) ? $rank_map[ $a['department'] ] : PHP_INT_MAX;
-					$rank_b = isset( $rank_map[ $b['department'] ] ) ? $rank_map[ $b['department'] ] : PHP_INT_MAX;
+				function ( $a, $b ) {
+					$rank_a = self::get_department_rank( $a['department'] );
+					$rank_b = self::get_department_rank( $b['department'] );
 					if ( $rank_a !== $rank_b ) {
 						return $rank_a <=> $rank_b;
 					}
@@ -780,13 +789,55 @@ class RC_Query {
 	}
 
 	/**
-	 * نگاشت «عنوان دپارتمان → رتبه» (عدد کمتر = مهم‌تر)
+	 * نرمال‌سازی کلید نام دپارتمان برای تطبیق دقیق بین خروجی لن‌میس و تنظیمات ادمین:
+	 * یکسان‌سازی ی/ک عربی، الف/آ، حذف نیم‌فاصله و فاصله‌ها، و حذف پیشوند اختیاری «دپارتمان».
+	 */
+	public static function normalize_department_key( $name ) {
+		$name = trim( (string) $name );
+		if ( '' === $name ) {
+			return '';
+		}
+		$name = RC_Jalali::to_latin_digits( $name );
+		$name = str_replace(
+			array( "\u{200C}", "\u{200F}", "\u{200E}", "\u{00A0}", "\u{064A}", "\u{0643}", "\u{0629}", "\u{0623}", "\u{0625}", "\u{0622}" ),
+			array( ' ', '', '', ' ', 'ی', 'ک', 'ه', 'ا', 'ا', 'ا' ),
+			$name
+		);
+		$name = preg_replace( '/^\s*دپارتمان\s+/u', '', $name );
+		$name = preg_replace( '/[\s\-–—_،,]+/u', '', (string) $name );
+		return function_exists( 'mb_strtolower' ) ? mb_strtolower( (string) $name, 'UTF-8' ) : strtolower( (string) $name );
+	}
+
+	/**
+	 * نگاشت «عنوان نرمال‌شده دپارتمان → رتبه» (عدد کمتر = مهم‌تر)
 	 */
 	public static function get_department_rank_map() {
 		if ( null === self::$rank_cache ) {
-			self::$rank_cache = array_flip( self::get_department_priority() );
+			$map = array();
+			foreach ( self::get_department_priority() as $idx => $line ) {
+				$norm = self::normalize_department_key( $line );
+				if ( '' !== $norm && ! isset( $map[ $norm ] ) ) {
+					$map[ $norm ] = $idx;
+				}
+			}
+			self::$rank_cache = $map;
 		}
 		return self::$rank_cache;
+	}
+
+	/**
+	 * دریافت رتبه یک دپارتمان بر اساس تنظیمات اولویت (عدد کمتر = اولویت بالاتر)
+	 */
+	public static function get_department_rank( $department_name ) {
+		$map = self::get_department_rank_map();
+		if ( empty( $map ) ) {
+			return PHP_INT_MAX;
+		}
+		$norm = self::normalize_department_key( $department_name );
+		if ( '' === $norm ) {
+			return PHP_INT_MAX;
+		}
+		return isset( $map[ $norm ] ) ? $map[ $norm ] : PHP_INT_MAX;
 	}
 
 	/**

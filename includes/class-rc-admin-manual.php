@@ -84,7 +84,7 @@ class RC_Admin_Manual {
 		$class_key   = isset( $_POST['class_key'] ) ? sanitize_text_field( wp_unslash( $_POST['class_key'] ) ) : '';
 		$description = isset( $_POST['description'] ) ? wp_kses_post( wp_unslash( $_POST['description'] ) ) : '';
 		$link        = isset( $_POST['link'] ) ? esc_url_raw( wp_unslash( $_POST['link'] ), array( 'http', 'https' ) ) : '';
-		$priority    = isset( $_POST['priority'] ) ? (int) $_POST['priority'] : 0;
+		$priority    = isset( $_POST['priority'] ) ? (int) RC_Jalali::to_latin_digits( wp_unslash( $_POST['priority'] ) ) : 0;
 		$title       = isset( $_POST['title'] ) ? sanitize_text_field( wp_unslash( $_POST['title'] ) ) : '';
 
 		if ( empty( $class_key ) ) {

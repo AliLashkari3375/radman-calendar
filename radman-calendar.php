@@ -1,11 +1,11 @@
 <?php
 /**
  * Plugin Name: Radman Calendar
- * Plugin URI: https://Alilashkari.ir/
+ * Plugin URI: https://alilashkari.ir/
  * Description: سیستم جامع تقویم آموزشی - اتصال به API لن‌میس، شرت‌کدهای تقویم/دوره، و پنل مدیریت.
- * Version: 1.7.9
+ * Version: 1.8.0
  * Author: Ali Lashkari
- * Author URI: https://Alilashkari.ir/
+ * Author URI: https://alilashkari.ir/
  * Text Domain: radman-calendar
  *
  * پیوست فنی مرجع: پیوست فنی ۱۰۰۰
@@ -25,7 +25,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 // -----------------------------------------------------------------------
 // ثابت‌های اصلی پلاگین
 // -----------------------------------------------------------------------
-define( 'RC_VERSION', '1.7.9' );
+define( 'RC_VERSION', '1.8.0' );
 define( 'RC_PATH', plugin_dir_path( __FILE__ ) );
 define( 'RC_URL', plugin_dir_url( __FILE__ ) );
 define( 'RC_DB_VERSION', '1.1' ); // برای مایگریشن‌های آینده جدول دیتابیس
